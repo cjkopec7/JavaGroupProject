@@ -11,8 +11,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -36,9 +38,10 @@ public class Hub extends JFrame implements ActionListener {
 	private JPanel panel, statsPanel, bottomPanel, westPanel, eastPanel, centerPanel;
 	private JTextPane console, xp, xpTill, lvl;
 	private JTextField exp, bag, equip;
+	private JList invent, storage, database;
 
 	public static void main(String[] args) {
-		Hub h = new Hub("Java Project Beta", new Player("Coobs", "123"));
+		Hub h = new Hub("Coobs' Quest™", new Player("Coobs", "123"));
 
 	}
 
@@ -47,7 +50,7 @@ public class Hub extends JFrame implements ActionListener {
 		player = plyr;
 		this.setLayout(new BorderLayout());
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setPreferredSize(new Dimension(800, 450));
+		setPreferredSize(new Dimension(700, 450));
 		setJMenuBar(createMenuBar());
 		setContentPane(createContentPane());
 		statsPanel = createStatsPanel(player.getName(), (int) player.getLevel(), player.getExperience(),
@@ -66,29 +69,28 @@ public class Hub extends JFrame implements ActionListener {
 
 	public JPanel createBottomPanel() {
 		JPanel bottomPanell = new JPanel(new GridLayout(0, 1));
-		JPanel functions = new JPanel(new GridLayout(0, 3));
+		JPanel functions = new JPanel(new GridLayout(0, 3, 150, 0));
 		JPanel showConsole = new JPanel(new BorderLayout());
 		console = new JTextPane();
 		formatJTextPane(console, "Console", new Font("Courier New", Font.PLAIN, 12));
 		showConsole.add(console, BorderLayout.CENTER);
-
-		exp = new JTextField("Xp");
-		bag = new JTextField("Id");
-		equip = new JTextField("Id");
-		JLabel xp = new JLabel("Gain Exp");
-		JLabel bg = new JLabel("Bag Item");
-		JLabel eq = new JLabel("Equip Item");
+		exp = new JTextField("Xp", 1);
+		bag = new JTextField("Id", 1);
+		equip = new JTextField("Id", 1);
+		JLabel xp = new JLabel("Gain Exp (Alt-G)");
+		JLabel bg = new JLabel("Bag Item (Alt-B)");
+		JLabel eq = new JLabel("Equip Item (Alt-E)");
 		formatJLabel(xp, new Font("Arial", Font.PLAIN, 12));
 		formatJLabel(bg, new Font("Arial", Font.PLAIN, 12));
 		formatJLabel(eq, new Font("Arial", Font.PLAIN, 12));
-		
+
 		functions.add(xp);
 		functions.add(bg);
 		functions.add(eq);
 		functions.add(exp);
 		functions.add(bag);
 		functions.add(equip);
-		
+
 		bottomPanell.add(functions);
 		bottomPanell.add(showConsole);
 
@@ -105,11 +107,11 @@ public class Hub extends JFrame implements ActionListener {
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 	}
-	
+
 	public void formatJLabel(JLabel label, Font font) {
 		label.setHorizontalAlignment(JLabel.CENTER);
 		label.setFont(font);
-		
+
 	}
 
 	public void printToConsole(String text) {
@@ -123,7 +125,7 @@ public class Hub extends JFrame implements ActionListener {
 		xpTill = new JTextPane();
 		lvl = new JTextPane();
 		formatJTextPane(xp, Integer.toString((int) exp), new Font("Arial", Font.PLAIN, 15));
-		formatJTextPane(xpTill, Integer.toString((int) expLeft), new Font("Arial", Font.PLAIN, 15));	
+		formatJTextPane(xpTill, Integer.toString((int) expLeft), new Font("Arial", Font.PLAIN, 15));
 		formatJTextPane(lvl, "Level " + (int) lv, new Font("Arial", Font.PLAIN, 12));
 		JLabel playerName = new JLabel(name);
 		JLabel xpp = new JLabel("-Experience-");
@@ -161,16 +163,38 @@ public class Hub extends JFrame implements ActionListener {
 			updateHub();
 		} else if (e.getActionCommand().equals("Gain Exp")) {
 			int cl = (int) player.getLevel();
-			player.gainExp(100);
-			if ((int) player.getLevel() > cl) {
-				printToConsole(player.getName() + " leveled up to " + (int) player.getLevel());
+			String xp = exp.getText();
+			try {
+				int xpi = Integer.parseInt(xp);
+				player.gainExp(xpi);
+				printToConsole(player.getName() + " gained " + xpi + " experience");
+				updateHub();
+				if ((int) player.getLevel() > cl) {
+					printToConsole(player.getName() + " gained " + xpi + " experience and leveled up to " + (int) player.getLevel());
+				}
+			} catch (NumberFormatException n) {
+				printToConsole("Invalid Input");
+
+			}
+		} else if (e.getActionCommand().equals("Bag Item")) {
+			String bg = bag.getText();
+			try {
+				int xpi = Integer.parseInt(bg);
+				player.gainExp(xpi);
+				
+			} catch (NumberFormatException n) {
+				printToConsole("Invalid Input");
 			}
 			updateHub();
-		} else if (e.getActionCommand().equals("Console")) {
-			printToConsole("Test");
-			updateHub();
-		} else if (e.getActionCommand().equals("Console")) {
-			printToConsole("Test");
+		} else if (e.getActionCommand().equals("Equip")) {
+			String bg = bag.getText();
+			try {
+				int xpi = Integer.parseInt(bg);
+				player.gainExp(xpi);
+				
+			} catch (NumberFormatException n) {
+				printToConsole("Invalid Input");
+			}
 			updateHub();
 		}
 
@@ -200,8 +224,8 @@ public class Hub extends JFrame implements ActionListener {
 
 		menuBar = new JMenuBar();
 
-		menu = new JMenu("File");
-		menu.setMnemonic(KeyEvent.VK_F);
+		menu = new JMenu("Admin");
+		menu.setMnemonic(KeyEvent.VK_A);
 		menuBar.add(menu);
 
 		menuItem = new JMenuItem("Open Player...");
@@ -209,13 +233,24 @@ public class Hub extends JFrame implements ActionListener {
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
 
-		menuItem = new JMenuItem("Console");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
-		menuItem.addActionListener(this);
-		menu.add(menuItem);
 
 		menuItem = new JMenuItem("Gain Exp");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("Bag Item");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.ALT_MASK));
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("Equip Item");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("Console Test");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
 

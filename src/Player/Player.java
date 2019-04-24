@@ -38,8 +38,8 @@ public class Player {
 	public void gainExp(double xp) {
 		experience += xp;
 		expTillLevel -= xp;
-		double rollover = Math.abs(expTillLevel);
-		if (expTillLevel <= 0) {
+		while (expTillLevel <= 0) {
+			double rollover = Math.abs(expTillLevel);
 			levelUp();
 			expTillLevel -= rollover;
 //			System.out.println(name + " leveled up to " + (int) level);

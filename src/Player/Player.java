@@ -5,11 +5,12 @@ import Bag.Equipment;
 import Bag.Storage;
 import Item.Item;
 import Item.Resource;
+import Item.Worn;
 
 public class Player {
 	private String name, password;
 	private double level, experience, expTillLevel;
-	private int money, health, stamina;
+	private int money, health, stamina, strength, magic, archery, defence;
 	private Bag bag;
 	private Equipment equips;
 	private Storage storage;
@@ -18,30 +19,25 @@ public class Player {
 		name = user;
 		password = pass;
 		level = 1;
+		strength = 0;
+		magic = 0;
+		archery = 0;
 		health = 100;
 		stamina = 100;
 		expTillLevel = expSet();
 		experience = 0;
 		money = 100;
 		bag = new Bag(20);
-//		bag.storeItem(new Resource(69));
-//		bag.storeItem(new Resource(69));
-		bag.storeItem(new Item(420));
 		equips = new Equipment();
-//		gainExp(83);
+		storage = new Storage(10);
+		bag.storeItem(bag.getDatabase().get(8));
+		bag.storeItem(bag.getDatabase().get(2));
 //		bag.removeItem(0);
 	}
 
 	public void gainExp(double xp) {
 		experience += xp;
 		expTillLevel -= xp;
-		double rollover = Math.abs(expTillLevel);
-		if (expTillLevel <= 0) {
-			levelUp();
-			experience += rollover;
-			expTillLevel -= rollover;
-			System.out.println(name + " leveled up to " + level);
-		}
 
 	}
 
@@ -56,6 +52,10 @@ public class Player {
 	}
 	public Item craftItem(Resource[] items) {
 		return null;
+	}
+	
+	public void useItem(Item i) {
+	
 	}
 
 	public String getName() {
@@ -101,6 +101,49 @@ public class Player {
 	public int getMoney() {
 		return money;
 	}
+	
+
+	public int getStrength() {
+		return strength;
+	}
+
+	public void setStrength(int strength) {
+		this.strength = strength;
+	}
+
+	public int getMagic() {
+		return magic;
+	}
+
+	public void setMagic(int magic) {
+		this.magic = magic;
+	}
+
+	public int getArchery() {
+		return archery;
+	}
+
+	public void setArchery(int archery) {
+		this.archery = archery;
+	}
+	
+	
+
+	public int getDefence() {
+		return defence;
+	}
+
+	public void setDefence(int defence) {
+		this.defence = defence;
+	}
+
+	public Storage getStorage() {
+		return storage;
+	}
+
+	public void setStorage(Storage storage) {
+		this.storage = storage;
+	}
 
 	public void setMoney(int money) {
 		this.money = money;
@@ -138,11 +181,14 @@ public class Player {
 		this.equips = equips;
 	}
 
+	
+
 	@Override
 	public String toString() {
 		return "Player [name=" + name + ", password=" + password + ", level=" + level + ", experience=" + experience
 				+ ", expTillLevel=" + expTillLevel + ", money=" + money + ", health=" + health + ", stamina=" + stamina
-				+ ", bag=" + bag + ", equips=" + equips + "]";
+				+ ", strength=" + strength + ", magic=" + magic + ", archery=" + archery + ", defence=" + defence
+				+ ", bag=" + bag + ", equips=" + equips + ", storage=" + storage + "]";
 	}
 
 	public static void main(String[] args) {

@@ -11,7 +11,12 @@ public class Game {
 
 	public Game(String s) {
 		player = new Player(s, "123");
+		hub = new Hub("Java Project BETA", player); 
 		System.out.println("New Game");
+	}
+	
+	public Player loadPlayer() {
+		return null;
 	}
 	
 	public void launchGame() {
@@ -28,7 +33,6 @@ public class Game {
 
 	public static void main(String[] args) {
 		Game g = new Game("Coobs");
-		System.out.println(g.getPlayer());
 	}
 
 }

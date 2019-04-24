@@ -15,6 +15,16 @@ public class Item {
 		weight = 1.0;
 		name = "default";
 		description = "default";
+		
+		
+	}
+	
+	public Item(int i, int lvlr, double lbs, String nme, String desc) {
+		this(i);
+		levelReq = lvlr;
+		weight = lbs;
+		name = nme;
+		description = desc;
 	}
 	
 	public void setItemAttributes(int id) {

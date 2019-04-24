@@ -1,0 +1,9 @@
+0,,H,,Hat of Honor,,An honorable hat,,1.5,,1
+1,,S,,Top of Terror,,A terrible, ratty shirt,,2.0,,1
+2,,B,,Legs of the Lost,,Some pants, but they aren't found,,2.0,,1
+3,,R,,Basic Stick,,Can be used to make wooden weapons/tools,,2.0,,1
+4,,W,,Wooden Sword,,Looks good enough to stab with,,2.0,,1
+5,,W,,Wooden Bow,,Shoots arrows effectively,,2.0,,1
+6,,W,,Wooden Staff,,For basic magic casting,,2.0,,1
+7,,T,,Wooden Axe,,For cutting sticks and logs,,1.0,,1
+8,,R,,Raw Bugs,,B. Grylls would call this protien,,0.5,,1

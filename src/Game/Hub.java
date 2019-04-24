@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,6 +19,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
@@ -33,7 +35,7 @@ public class Hub extends JFrame implements ActionListener {
 	private JScrollPane pane;
 	private JPanel panel, statsPanel, bottomPanel, westPanel, eastPanel, centerPanel;
 	private JTextPane console, xp, xpTill, lvl;
-	private JTextArea exp, bag, equip;
+	private JTextField exp, bag, equip;
 
 	public static void main(String[] args) {
 		Hub h = new Hub("Java Project Beta", new Player("Coobs", "123"));
@@ -67,15 +69,35 @@ public class Hub extends JFrame implements ActionListener {
 		JPanel functions = new JPanel(new GridLayout(0, 3));
 		JPanel showConsole = new JPanel(new BorderLayout());
 		console = new JTextPane();
-		formatJTextPane(console, "Console");
+		formatJTextPane(console, "Console", new Font("Courier New", Font.PLAIN, 12));
 		showConsole.add(console, BorderLayout.CENTER);
+
+		exp = new JTextField("Xp");
+		bag = new JTextField("Id");
+		equip = new JTextField("Id");
+		JLabel xp = new JLabel("Gain Exp");
+		JLabel bg = new JLabel("Bag Item");
+		JLabel eq = new JLabel("Equip Item");
+		formatJLabel(xp, new Font("Arial", Font.PLAIN, 12));
+		formatJLabel(bg, new Font("Arial", Font.PLAIN, 12));
+		formatJLabel(eq, new Font("Arial", Font.PLAIN, 12));
+		
+		functions.add(xp);
+		functions.add(bg);
+		functions.add(eq);
+		functions.add(exp);
+		functions.add(bag);
+		functions.add(equip);
+		
 		bottomPanell.add(functions);
 		bottomPanell.add(showConsole);
+
 		return bottomPanell;
 	}
-	
-	public void formatJTextPane(JTextPane area, String set) {
+
+	public void formatJTextPane(JTextPane area, String set, Font font) {
 		area.setText(set);
+		area.setFont(font);
 		area.setEditable(false);
 		area.setOpaque(false);
 		StyledDocument doc = area.getStyledDocument();
@@ -83,31 +105,32 @@ public class Hub extends JFrame implements ActionListener {
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 	}
+	
+	public void formatJLabel(JLabel label, Font font) {
+		label.setHorizontalAlignment(JLabel.CENTER);
+		label.setFont(font);
+		
+	}
 
 	public void printToConsole(String text) {
 		console.setText(text);
+
 	}
 
 	public JPanel createStatsPanel(String name, int lv, double exp, double expLeft) {
 		JPanel statsPanell = new JPanel(new GridLayout(0, 3));
-		JLabel playerName = new JLabel(name);
 		xp = new JTextPane();
-		formatJTextPane(xp, Integer.toString((int) exp));
 		xpTill = new JTextPane();
-		formatJTextPane(xpTill, Integer.toString((int) expLeft));
 		lvl = new JTextPane();
-		formatJTextPane(lvl, "Level " + (int) lv);
+		formatJTextPane(xp, Integer.toString((int) exp), new Font("Arial", Font.PLAIN, 15));
+		formatJTextPane(xpTill, Integer.toString((int) expLeft), new Font("Arial", Font.PLAIN, 15));	
+		formatJTextPane(lvl, "Level " + (int) lv, new Font("Arial", Font.PLAIN, 12));
+		JLabel playerName = new JLabel(name);
 		JLabel xpp = new JLabel("-Experience-");
 		JLabel xpl = new JLabel("-Exp Till Level-");
-		playerName.setHorizontalAlignment(JLabel.CENTER);
-		playerName.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		xp.setFont(new Font("Arial", Font.PLAIN, 15));
-		xpTill.setFont(new Font("Arial", Font.PLAIN, 15));
-		lvl.setFont(new Font("Arial", Font.PLAIN, 12));
-		xpp.setHorizontalAlignment(JLabel.CENTER);
-		xpp.setFont(new Font("Arial", Font.PLAIN, 10));
-		xpl.setHorizontalAlignment(JLabel.CENTER);
-		xpl.setFont(new Font("Arial", Font.PLAIN, 10));
+		formatJLabel(playerName, new Font("Times New Roman", Font.BOLD, 18));
+		formatJLabel(xpp, new Font("Arial", Font.BOLD, 10));
+		formatJLabel(xpl, new Font("Arial", Font.BOLD, 10));
 		statsPanell.add(xpp);
 		statsPanell.add(playerName);
 		statsPanell.add(xpl);
@@ -120,9 +143,9 @@ public class Hub extends JFrame implements ActionListener {
 	}
 
 	public void updateHub() {
-		formatJTextPane(xp, Integer.toString((int) player.getExperience()));
-		formatJTextPane(xpTill, Integer.toString((int) player.getExpTillLevel()));
-		formatJTextPane(lvl, "Level " + (int) player.getLevel());
+		formatJTextPane(xp, Integer.toString((int) player.getExperience()), new Font("Arial", Font.PLAIN, 15));
+		formatJTextPane(xpTill, Integer.toString((int) player.getExpTillLevel()), new Font("Arial", Font.PLAIN, 15));
+		formatJTextPane(lvl, "Level " + (int) player.getLevel(), new Font("Arial", Font.PLAIN, 12));
 	}
 
 	@Override
@@ -137,7 +160,11 @@ public class Hub extends JFrame implements ActionListener {
 			printToConsole("Test");
 			updateHub();
 		} else if (e.getActionCommand().equals("Gain Exp")) {
+			int cl = (int) player.getLevel();
 			player.gainExp(100);
+			if ((int) player.getLevel() > cl) {
+				printToConsole(player.getName() + " leveled up to " + (int) player.getLevel());
+			}
 			updateHub();
 		} else if (e.getActionCommand().equals("Console")) {
 			printToConsole("Test");

@@ -30,14 +30,20 @@ public class Player {
 		bag = new Bag(20);
 		equips = new Equipment();
 		storage = new Storage(10);
-		bag.storeItem(bag.getDatabase().get(8));
-		bag.storeItem(bag.getDatabase().get(2));
+		bag.storeItem(bag.getDatabase().get(7));
+//		bag.storeItem(bag.getDatabase().get(2));
 //		bag.removeItem(0);
 	}
 
 	public void gainExp(double xp) {
 		experience += xp;
 		expTillLevel -= xp;
+		double rollover = Math.abs(expTillLevel);
+		if (expTillLevel <= 0) {
+			levelUp();
+			expTillLevel -= rollover;
+//			System.out.println(name + " leveled up to " + (int) level);
+		}
 
 	}
 
@@ -50,12 +56,13 @@ public class Player {
 		level++;
 		expTillLevel = expSet();
 	}
+
 	public Item craftItem(Resource[] items) {
 		return null;
 	}
-	
+
 	public void useItem(Item i) {
-	
+
 	}
 
 	public String getName() {
@@ -101,7 +108,6 @@ public class Player {
 	public int getMoney() {
 		return money;
 	}
-	
 
 	public int getStrength() {
 		return strength;
@@ -126,8 +132,6 @@ public class Player {
 	public void setArchery(int archery) {
 		this.archery = archery;
 	}
-	
-	
 
 	public int getDefence() {
 		return defence;
@@ -180,8 +184,6 @@ public class Player {
 	public void setEquips(Equipment equips) {
 		this.equips = equips;
 	}
-
-	
 
 	@Override
 	public String toString() {

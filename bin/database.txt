@@ -7,3 +7,7 @@
 6,,W,,Wooden Staff,,For basic magic casting,,2.0,,1
 7,,T,,Wooden Axe,,For cutting sticks and logs,,1.0,,1
 8,,R,,Raw Bugs,,B. Grylls would call this protien,,0.5,,1
+9,,H,,Tompkin's Helmet,,You've got a hat, Tompkins,,1.5,,1
+10,,S,,Tompkin's Button Up,,Looking good, sir,,2.0,,1
+11,,B,,Tompkin's Pants,,I can see your socks!,,2.0,,1
+12,,W,,Tompkin's Final Exam,,Better get an A!,,2.0,,1

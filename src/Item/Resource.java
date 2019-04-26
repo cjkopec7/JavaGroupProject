@@ -10,6 +10,7 @@ public class Resource extends Item {
 	}
 	public Resource(int id, int lvlr, double lbs, String name, String desc, int stk) {
 		super(id, lvlr, lbs, name, desc);
+		setStackable(true);
 		setStack(stk);
 	}
 

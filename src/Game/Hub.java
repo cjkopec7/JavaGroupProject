@@ -45,8 +45,8 @@ public class Hub extends JFrame implements ActionListener {
 	private JScrollPane pane;
 	private JPanel panel, statsPanel, bottomPanel, westPanel, eastPanel, centerPanel;
 	private JTextPane console, xp, xpTill, lvl;
-	private JTextField exp, bag, equip;
-	private JList invent, storage, database;
+	private JTextField exp, bag, search;
+	private JList invent, eqm, storage, database;
 	private DefaultListModel inventory, equips;
 
 	public static void main(String[] args) {
@@ -59,7 +59,7 @@ public class Hub extends JFrame implements ActionListener {
 		player = plyr;
 		this.setLayout(new BorderLayout());
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setPreferredSize(new Dimension(850, 450));
+		setPreferredSize(new Dimension(500, 450));
 		setJMenuBar(createMenuBar());
 		setContentPane(createContentPane());
 		statsPanel = createStatsPanel(player.getName(), (int) player.getLevel(), player.getExperience(),
@@ -79,6 +79,45 @@ public class Hub extends JFrame implements ActionListener {
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
 	}
 
+	public void updateLists() {
+		inventory = new DefaultListModel();
+		equips = new DefaultListModel();
+		int index = 0;
+		for (Item i : player.getBag().getContents()) {
+			if (i != null) {
+				inventory.addElement(index + ": " + i.getName() + " [" + GetClassName(i) + "]");
+				index++;
+			}
+		}
+		invent.setModel(inventory);
+		if (player.getEquips().getHat() != null) {
+			equips.addElement("Hat: " + player.getEquips().getHat().getName());
+
+		} else {
+			equips.addElement("Hat: Empty");
+		}
+		if (player.getEquips().getTop() != null) {
+			equips.addElement("Top: " + player.getEquips().getTop().getName());
+
+		} else {
+			equips.addElement("Top: Empty");
+		}
+		if (player.getEquips().getBottom() != null) {
+			equips.addElement("Bottom: " + player.getEquips().getBottom().getName());
+
+		} else {
+			equips.addElement("Bottom: Empty");
+		}
+		if (player.getEquips().getHold() != null) {
+			equips.addElement("Hold: " + player.getEquips().getHold().getName());
+
+		} else {
+			equips.addElement("Hold: Empty");
+		}
+		invent.setModel(inventory);
+		eqm.setModel(equips);
+	}
+
 	public JPanel createWestPanel() {
 		int index = 0;
 		JPanel westPanell = new JPanel(new BorderLayout());
@@ -92,7 +131,6 @@ public class Hub extends JFrame implements ActionListener {
 				index++;
 			}
 		}
-
 		invent = new JList(inventory);
 		invent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		invent.setSelectedIndex(0);
@@ -106,13 +144,13 @@ public class Hub extends JFrame implements ActionListener {
 						Object o = theList.getModel().getElementAt(index);
 						if (player.getBag().getContents()[index] instanceof Worn
 								| player.getBag().getContents()[index] instanceof Held) {
-
 							player.equipItem(player.getBag().getContents()[index]);
 							player.getBag().removeItem(index);
-							System.out.println("Double-clicked on: " + o.toString());
+							updateHub();
+
+						} else {
+							printToConsole("You can't equip that.");
 						}
-					} else {
-						printToConsole("You can't equip that.");
 					}
 				}
 			}
@@ -157,12 +195,73 @@ public class Hub extends JFrame implements ActionListener {
 		} else {
 			equips.addElement("Hold: Empty");
 		}
-		invent = new JList(equips);
-		invent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		invent.setSelectedIndex(0);
-		invent.setVisibleRowCount(4);
 
-		JScrollPane pane = new JScrollPane(invent);
+		eqm = new JList(equips);
+		eqm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		eqm.setSelectedIndex(0);
+		eqm.setVisibleRowCount(4);
+
+		MouseListener mouseListener = new MouseAdapter() {
+			public void mouseClicked(MouseEvent mouseEvent) {
+				JList<String> theList = (JList) mouseEvent.getSource();
+				if (mouseEvent.getClickCount() == 2) {
+					int index = theList.locationToIndex(mouseEvent.getPoint());
+					if (index >= 0) {
+						Object o = theList.getModel().getElementAt(index);
+						if (index == 0) {
+							if (player.getEquips().getHat() != null) {
+								player.getBag().storeItem(player.getEquips().getHat());
+								player.getEquips().setHat(null);
+							}
+
+							else {
+								printToConsole("Slot is empty");
+								player.getEquips().setHat(null);
+							}
+
+						} else if (index == 1) {
+							if (player.getEquips().getTop() != null) {
+								player.getBag().storeItem(player.getEquips().getTop());
+								player.getEquips().setTop(null);
+							}
+
+							else {
+								player.getEquips().setTop(null);
+								printToConsole("Slot is empty");
+							}
+
+						} else if (index == 2) {
+							if (player.getEquips().getBottom() != null) {
+								player.getBag().storeItem(player.getEquips().getBottom());
+								player.getEquips().setBottom(null);
+							}
+
+							else {
+								player.getEquips().setHat(null);
+								printToConsole("Slot is empty");
+							}
+
+						} else if (index == 3) {
+
+							if (player.getEquips().getHold() != null) {
+								player.getBag().storeItem(player.getEquips().getHold());
+								player.getEquips().setHold(null);
+							} else {
+								player.getEquips().setHold(null);
+								printToConsole("Slot is empty");
+							}
+
+						}
+					}
+
+				}
+				updateHub();
+			}
+
+		};
+		eqm.addMouseListener(mouseListener);
+
+		JScrollPane pane = new JScrollPane(eqm);
 		pane.setPreferredSize(new Dimension(200, 200));
 		eastPanell.add(eq, BorderLayout.NORTH);
 		eastPanell.add(pane, BorderLayout.CENTER);
@@ -184,10 +283,10 @@ public class Hub extends JFrame implements ActionListener {
 		formatJTextPane(console, "Console", new Font("Courier New", Font.PLAIN, 12));
 		showConsole.add(console, BorderLayout.SOUTH);
 		exp = new JTextField("Xp", 1);
-		bag = new JTextField("Id", 1);
-		equip = new JTextField("Id", 1);
+		bag = new JTextField("Console", 1);
+		search = new JTextField("Id", 1);
 		JLabel xp = new JLabel("Gain Exp (Alt-G)");
-		JLabel bg = new JLabel("Bag Item (Alt-B)");
+		JLabel bg = new JLabel("Console Test (Alt-C)");
 		JLabel eq = new JLabel("Search Item (Alt-S)");
 		formatJLabel(xp, new Font("Arial", Font.PLAIN, 12));
 		formatJLabel(bg, new Font("Arial", Font.PLAIN, 12));
@@ -198,12 +297,23 @@ public class Hub extends JFrame implements ActionListener {
 		functions.add(eq);
 		functions.add(exp);
 		functions.add(bag);
-		functions.add(equip);
+		functions.add(search);
 
 		bottomPanell.add(functions);
 		bottomPanell.add(showConsole);
 
 		return bottomPanell;
+	}
+
+	public String lookupItem(int id) {
+		System.out.println(player.getBag().getDatabase().toString());
+		if (player.getBag().getDatabase().containsKey(id) == true) {
+			return id + ": " + player.getBag().getDatabase().get(id).getName()+ " - " + player.getBag().getDatabase().get(id).getDescription() + " ["
+					+ GetClassName(player.getBag().getDatabase().get(id)) + "]";
+		} else {
+			return "Invalid Item ID";
+		}
+
 	}
 
 	public void formatJTextPane(JTextPane area, String set, Font font) {
@@ -257,8 +367,7 @@ public class Hub extends JFrame implements ActionListener {
 		formatJTextPane(xp, Integer.toString((int) player.getExperience()), new Font("Arial", Font.PLAIN, 15));
 		formatJTextPane(xpTill, Integer.toString((int) player.getExpTillLevel()), new Font("Arial", Font.PLAIN, 15));
 		formatJTextPane(lvl, "Level " + (int) player.getLevel(), new Font("Arial", Font.PLAIN, 12));
-		inventory.removeAllElements();
-		equips.removeAllElements();
+		updateLists();
 	}
 
 	@Override
@@ -270,7 +379,8 @@ public class Hub extends JFrame implements ActionListener {
 //			open();
 
 		} else if (e.getActionCommand().equals("Console Test")) {
-			printToConsole("~TeStInG~");
+			String con = bag.getText();
+			printToConsole(con);
 			updateHub();
 		} else if (e.getActionCommand().equals("Gain Exp")) {
 			int cl = (int) player.getLevel();
@@ -300,20 +410,22 @@ public class Hub extends JFrame implements ActionListener {
 			updateHub();
 		} else if (e.getActionCommand().equals("Equip")) {
 			String bg = bag.getText();
+
+			updateHub();
+		} else if (e.getActionCommand().equals("Reset")) {
+			player = new Player("Coobs", "123");
+			updateHub();
+			console.setText("Player " + player.getName() + " reset");
+		} else if (e.getActionCommand().equals("Search Item")) {
+			String idd = search.getText();
+			System.out.println(idd);
 			try {
-				int xpi = Integer.parseInt(bg);
-				player.gainExp(xpi);
+				Integer id = Integer.parseInt(idd);
+				printToConsole(lookupItem(id));
 
 			} catch (NumberFormatException n) {
 				printToConsole("Invalid Input");
 			}
-			updateHub();
-		} else if (e.getActionCommand().equals("Reset")) {
-			player.setLevel(1);
-			player.setExperience(0);
-			player.setExpTillLevel(player.expSet());
-			updateHub();
-			console.setText("Player " + player.getName() + " reset");
 		}
 
 	}
@@ -346,20 +458,16 @@ public class Hub extends JFrame implements ActionListener {
 		menu.setMnemonic(KeyEvent.VK_A);
 		menuBar.add(menu);
 
-		menuItem = new JMenuItem("Open Player...");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-		menuItem.addActionListener(this);
-		menu.add(menuItem);
+//		menuItem = new JMenuItem("Open Player...");
+//		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+//		menuItem.addActionListener(this);
+//		menu.add(menuItem);
 
 		menuItem = new JMenuItem("Gain Exp");
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
 
-		menuItem = new JMenuItem("Bag Item");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.ALT_MASK));
-		menuItem.addActionListener(this);
-		menu.add(menuItem);
 
 		menuItem = new JMenuItem("Search Item");
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));

@@ -34,9 +34,20 @@ public class Player {
 		bag = new Bag(20);
 		equips = new Equipment();
 		storage = new Storage(10);
+		bag.storeItem(bag.getDatabase().get(0));
+		bag.storeItem(bag.getDatabase().get(1));
+		bag.storeItem(bag.getDatabase().get(2));
+		bag.storeItem(bag.getDatabase().get(3));
+		bag.storeItem(bag.getDatabase().get(4));
+		bag.storeItem(bag.getDatabase().get(5));
 		bag.storeItem(bag.getDatabase().get(6));
-		equipItem(bag.getDatabase().get(1));
-		equipItem(bag.getDatabase().get(5));
+		bag.storeItem(bag.getDatabase().get(7));
+		bag.storeItem(bag.getDatabase().get(8));
+		bag.storeItem(bag.getDatabase().get(9));
+		bag.storeItem(bag.getDatabase().get(10));
+		bag.storeItem(bag.getDatabase().get(11));
+		bag.storeItem(bag.getDatabase().get(12));
+		
 //		bag.storeItem(bag.getDatabase().get(2));
 //		bag.removeItem(0);
 	}

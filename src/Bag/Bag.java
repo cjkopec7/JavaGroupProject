@@ -170,7 +170,7 @@ public class Bag {
 
 	public static void main(String[] args) {
 		Bag b = new Bag(20);
-		System.out.println(b.getDatabase().toString());
+
 	}
 
 }

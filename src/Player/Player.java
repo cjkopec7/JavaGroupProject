@@ -3,8 +3,12 @@ package Player;
 import Bag.Bag;
 import Bag.Equipment;
 import Bag.Storage;
+import Item.Bottom;
+import Item.Hat;
+import Item.Held;
 import Item.Item;
 import Item.Resource;
+import Item.Top;
 import Item.Worn;
 
 public class Player {
@@ -38,7 +42,7 @@ public class Player {
 	public void gainExp(double xp) {
 		experience += xp;
 		expTillLevel -= xp;
-		while (expTillLevel <= 0) {
+		while ((int) expTillLevel <= 0) {
 			double rollover = Math.abs(expTillLevel);
 			levelUp();
 			expTillLevel -= rollover;
@@ -46,9 +50,54 @@ public class Player {
 		}
 
 	}
+	public void equipItem(Item i) {
+		if (i instanceof Hat) {
+			if (equips.getHat() != null) {
+				bag.storeItem(equips.getHat());
+				equips.setHat((Hat) i);
+			} else {
+				equips.setHat((Hat) i);
+			}
 
-	private double expSet() {
-		double exp = 75 * Math.pow(1.10177068, level);
+		} else if (i instanceof Top) {
+			if (i instanceof Top) {
+				if (equips.getTop() != null) {
+					bag.storeItem(equips.getTop());
+					equips.setTop((Top) i);
+				} else {
+					equips.setTop((Top) i);
+				}
+			}
+
+		} else if (i instanceof Bottom) {
+			if (i instanceof Bottom) {
+				if (equips.getBotttom() != null) {
+					bag.storeItem(equips.getHat());
+					equips.setHat((Hat) i);
+				} else {
+					equips.setHat((Hat) i);
+				}
+			}
+
+		} else if (i instanceof Held) {
+			if (i instanceof Hat) {
+				if (equips.getHat() != null) {
+					bag.storeItem(equips.getHat());
+					equips.setHat((Hat) i);
+				} else {
+					equips.setHat((Hat) i);
+				}
+			}
+
+		}
+			
+	
+	}
+	
+
+
+	public double expSet() {
+		double exp = 85 * Math.pow(1.2177068, level);
 		return exp;
 	}
 

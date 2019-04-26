@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -24,11 +25,13 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import Item.Item;
 import Player.Player;
 
 public class Hub extends JFrame implements ActionListener {
@@ -50,36 +53,115 @@ public class Hub extends JFrame implements ActionListener {
 		player = plyr;
 		this.setLayout(new BorderLayout());
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setPreferredSize(new Dimension(700, 450));
+		setPreferredSize(new Dimension(850, 450));
 		setJMenuBar(createMenuBar());
 		setContentPane(createContentPane());
 		statsPanel = createStatsPanel(player.getName(), (int) player.getLevel(), player.getExperience(),
 				player.getExpTillLevel());
 		bottomPanel = createBottomPanel();
+		westPanel = createWestPanel();
+		eastPanel = createEastPanel();
+		centerPanel = createCenterPanel();
 		this.add(statsPanel, BorderLayout.NORTH);
 		this.add(bottomPanel, BorderLayout.SOUTH);
-//		this.add(westPanel, BorderLayout.WEST);
-//		this.add(eastPanel, BorderLayout.EAST);
-//		this.add(centerPanel, BorderLayout.CENTER);
+		this.add(westPanel, BorderLayout.WEST);
+		this.add(eastPanel, BorderLayout.EAST);
+		this.add(centerPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setVisible(true);
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
 	}
 
+	public JPanel createWestPanel() {
+		int index = 0;
+		JPanel westPanell = new JPanel(new BorderLayout());
+		DefaultListModel inventory = new DefaultListModel();
+		JLabel in = new JLabel("Inventory");
+		formatJLabel(in, new Font("Arial", Font.PLAIN, 12));
+
+		for (Item i : player.getBag().getContents()) {
+			if (i != null) {
+				inventory.addElement(index + ": " + i.getName() + " [" + GetClassName(i) + "]");
+				index++;
+			}
+		}
+
+		invent = new JList(inventory);
+		invent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		invent.setSelectedIndex(0);
+		invent.setVisibleRowCount(10);
+
+		JScrollPane pane = new JScrollPane(invent);
+		pane.setPreferredSize(new Dimension());
+		westPanell.add(in, BorderLayout.NORTH);
+		westPanell.add(pane, BorderLayout.CENTER);
+
+		return westPanell;
+
+	}
+
+	public JPanel createEastPanel() {
+		JPanel eastPanell = new JPanel(new BorderLayout());
+		DefaultListModel equips = new DefaultListModel();
+		JLabel eq = new JLabel("Equipment");
+		formatJLabel(eq, new Font("Arial", Font.PLAIN, 12));
+		if (player.getEquips().getHat() != null) {
+			equips.addElement("Hat: " + player.getEquips().getHat().getName());
+
+		} else {
+			equips.addElement("Hat: Empty");
+		}
+		if (player.getEquips().getTop() != null) {
+			equips.addElement("Top: " + player.getEquips().getTop().getName());
+
+		} else {
+			equips.addElement("Top: Empty");
+		}
+		if (player.getEquips().getBottom() != null) {
+			equips.addElement("Bottom: " + player.getEquips().getBottom().getName());
+
+		} else {
+			equips.addElement("Bottom: Empty");
+		}
+		if (player.getEquips().getHold() != null) {
+			equips.addElement("Hold: " + player.getEquips().getHold().getName());
+
+		} else {
+			equips.addElement("Hold: Empty");
+		}
+		invent = new JList(equips);
+		invent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		invent.setSelectedIndex(0);
+		invent.setVisibleRowCount(4);
+
+		JScrollPane pane = new JScrollPane(invent);
+		pane.setPreferredSize(new Dimension(200, 200));
+		eastPanell.add(eq, BorderLayout.NORTH);
+		eastPanell.add(pane, BorderLayout.CENTER);
+
+		return eastPanell;
+	}
+
+	public JPanel createCenterPanel() {
+		JPanel centerPanell = new JPanel(new GridLayout(0, 1));
+
+		return centerPanell;
+	}
+
 	public JPanel createBottomPanel() {
 		JPanel bottomPanell = new JPanel(new GridLayout(0, 1));
-		JPanel functions = new JPanel(new GridLayout(0, 3, 150, 0));
+		JPanel functions = new JPanel(new GridLayout(0, 3, 75, 0));
 		JPanel showConsole = new JPanel(new BorderLayout());
 		console = new JTextPane();
 		formatJTextPane(console, "Console", new Font("Courier New", Font.PLAIN, 12));
-		showConsole.add(console, BorderLayout.CENTER);
+		showConsole.add(console, BorderLayout.SOUTH);
 		exp = new JTextField("Xp", 1);
 		bag = new JTextField("Id", 1);
 		equip = new JTextField("Id", 1);
 		JLabel xp = new JLabel("Gain Exp (Alt-G)");
 		JLabel bg = new JLabel("Bag Item (Alt-B)");
-		JLabel eq = new JLabel("Equip Item (Alt-E)");
+		JLabel eq = new JLabel("Search Item (Alt-S)");
 		formatJLabel(xp, new Font("Arial", Font.PLAIN, 12));
 		formatJLabel(bg, new Font("Arial", Font.PLAIN, 12));
 		formatJLabel(eq, new Font("Arial", Font.PLAIN, 12));
@@ -158,8 +240,8 @@ public class Hub extends JFrame implements ActionListener {
 		if (e.getActionCommand().equals("Open Player...")) {
 //			open();
 
-		} else if (e.getActionCommand().equals("Console")) {
-			printToConsole("Test");
+		} else if (e.getActionCommand().equals("Console Test")) {
+			printToConsole("~TeStInG~");
 			updateHub();
 		} else if (e.getActionCommand().equals("Gain Exp")) {
 			int cl = (int) player.getLevel();
@@ -170,7 +252,8 @@ public class Hub extends JFrame implements ActionListener {
 				printToConsole(player.getName() + " gained " + xpi + " experience");
 				updateHub();
 				if ((int) player.getLevel() > cl) {
-					printToConsole(player.getName() + " gained " + xpi + " experience and leveled up to " + (int) player.getLevel());
+					printToConsole(player.getName() + " gained " + xpi + " experience and leveled up to "
+							+ (int) player.getLevel());
 				}
 			} catch (NumberFormatException n) {
 				printToConsole("Invalid Input");
@@ -181,7 +264,7 @@ public class Hub extends JFrame implements ActionListener {
 			try {
 				int xpi = Integer.parseInt(bg);
 				player.gainExp(xpi);
-				
+
 			} catch (NumberFormatException n) {
 				printToConsole("Invalid Input");
 			}
@@ -191,11 +274,17 @@ public class Hub extends JFrame implements ActionListener {
 			try {
 				int xpi = Integer.parseInt(bg);
 				player.gainExp(xpi);
-				
+
 			} catch (NumberFormatException n) {
 				printToConsole("Invalid Input");
 			}
 			updateHub();
+		} else if (e.getActionCommand().equals("Reset")) {
+			player.setLevel(1);
+			player.setExperience(0);
+			player.setExpTillLevel(player.expSet());
+			updateHub();
+			console.setText("Player " + player.getName() + " reset");
 		}
 
 	}
@@ -233,24 +322,28 @@ public class Hub extends JFrame implements ActionListener {
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
 
-
 		menuItem = new JMenuItem("Gain Exp");
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
-		
+
 		menuItem = new JMenuItem("Bag Item");
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.ALT_MASK));
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
-		
-		menuItem = new JMenuItem("Equip Item");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+
+		menuItem = new JMenuItem("Search Item");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
-		
+
 		menuItem = new JMenuItem("Console Test");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+
+		menuItem = new JMenuItem("Reset");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.ALT_MASK));
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
 

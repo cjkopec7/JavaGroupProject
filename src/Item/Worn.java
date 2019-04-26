@@ -1,6 +1,7 @@
 package Item;
 
 public class Worn extends Item{
+	private int defence;
 
 	public Worn(int i) {
 		super(i);

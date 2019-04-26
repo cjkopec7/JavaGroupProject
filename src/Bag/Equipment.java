@@ -1,42 +1,45 @@
 package Bag;
 
+import Item.Bottom;
+import Item.Hat;
 import Item.Held;
 import Item.Item;
+import Item.Top;
 import Item.Worn;
 
 public class Equipment {
-	private Worn hat, top, bottom;
+	private Hat hat;
+	private Top top;
+	private Bottom bottom;
 	private Held hold;
+	
 
 	public Equipment() {
 
 	}
 
-	public void checkSlots() {
 
-	}
-
-	public Worn getHat() {
+	public Hat getHat() {
 		return hat;
 	}
 
-	public void setHat(Worn hat) {
+	public void setHat(Hat hat) {
 		this.hat = hat;
 	}
 
-	public Worn getTop() {
+	public Top getTop() {
 		return top;
 	}
 
-	public void setTop(Worn top) {
+	public void setTop(Top top) {
 		this.top = top;
 	}
 
-	public Worn getBottom() {
+	public Bottom getBottom() {
 		return bottom;
 	}
 
-	public void setBottom(Worn bottom) {
+	public void setBottom(Bottom bottom) {
 		this.bottom = bottom;
 	}
 
@@ -52,7 +55,5 @@ public class Equipment {
 	public String toString() {
 		return "Equipment [hat=" + hat + ", top=" + top + ", bottom=" + bottom + ", hold=" + hold + "]";
 	}
-	
-	
 
 }

@@ -9,6 +9,9 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
@@ -31,7 +34,9 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import Item.Held;
 import Item.Item;
+import Item.Worn;
 import Player.Player;
 
 public class Hub extends JFrame implements ActionListener {
@@ -42,6 +47,7 @@ public class Hub extends JFrame implements ActionListener {
 	private JTextPane console, xp, xpTill, lvl;
 	private JTextField exp, bag, equip;
 	private JList invent, storage, database;
+	private DefaultListModel inventory, equips;
 
 	public static void main(String[] args) {
 		Hub h = new Hub("Coobs' Quest™", new Player("Coobs", "123"));
@@ -76,7 +82,7 @@ public class Hub extends JFrame implements ActionListener {
 	public JPanel createWestPanel() {
 		int index = 0;
 		JPanel westPanell = new JPanel(new BorderLayout());
-		DefaultListModel inventory = new DefaultListModel();
+		inventory = new DefaultListModel();
 		JLabel in = new JLabel("Inventory");
 		formatJLabel(in, new Font("Arial", Font.PLAIN, 12));
 
@@ -91,9 +97,30 @@ public class Hub extends JFrame implements ActionListener {
 		invent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		invent.setSelectedIndex(0);
 		invent.setVisibleRowCount(10);
+		MouseListener mouseListener = new MouseAdapter() {
+			public void mouseClicked(MouseEvent mouseEvent) {
+				JList<String> theList = (JList) mouseEvent.getSource();
+				if (mouseEvent.getClickCount() == 2) {
+					int index = theList.locationToIndex(mouseEvent.getPoint());
+					if (index >= 0) {
+						Object o = theList.getModel().getElementAt(index);
+						if (player.getBag().getContents()[index] instanceof Worn
+								| player.getBag().getContents()[index] instanceof Held) {
+
+							player.equipItem(player.getBag().getContents()[index]);
+							player.getBag().removeItem(index);
+							System.out.println("Double-clicked on: " + o.toString());
+						}
+					} else {
+						printToConsole("You can't equip that.");
+					}
+				}
+			}
+		};
+		invent.addMouseListener(mouseListener);
 
 		JScrollPane pane = new JScrollPane(invent);
-		pane.setPreferredSize(new Dimension());
+		pane.setPreferredSize(new Dimension(200, 200));
 		westPanell.add(in, BorderLayout.NORTH);
 		westPanell.add(pane, BorderLayout.CENTER);
 
@@ -103,7 +130,7 @@ public class Hub extends JFrame implements ActionListener {
 
 	public JPanel createEastPanel() {
 		JPanel eastPanell = new JPanel(new BorderLayout());
-		DefaultListModel equips = new DefaultListModel();
+		equips = new DefaultListModel();
 		JLabel eq = new JLabel("Equipment");
 		formatJLabel(eq, new Font("Arial", Font.PLAIN, 12));
 		if (player.getEquips().getHat() != null) {
@@ -230,6 +257,8 @@ public class Hub extends JFrame implements ActionListener {
 		formatJTextPane(xp, Integer.toString((int) player.getExperience()), new Font("Arial", Font.PLAIN, 15));
 		formatJTextPane(xpTill, Integer.toString((int) player.getExpTillLevel()), new Font("Arial", Font.PLAIN, 15));
 		formatJTextPane(lvl, "Level " + (int) player.getLevel(), new Font("Arial", Font.PLAIN, 12));
+		inventory.removeAllElements();
+		equips.removeAllElements();
 	}
 
 	@Override

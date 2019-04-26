@@ -13,7 +13,9 @@ import Item.Item;
 import Item.Resource;
 import Item.Tool;
 import Item.Top;
+import Item.Weapon;
 import Item.Worn;
+import Item.Held;
 import Player.Player;
 
 public class Bag {
@@ -21,7 +23,7 @@ public class Bag {
 	private double weight;
 	private Item[] contents;
 	private File file;
-	private Hashtable<Integer, Item>database;
+	private Hashtable<Integer, Item> database;
 
 	public Bag(int i) {
 		weight = 0.0;
@@ -33,7 +35,7 @@ public class Bag {
 		loadDatabase(file);
 
 	}
-	
+
 	public void loadDatabase(File file) {
 		if (database == null) {
 			database = new Hashtable<Integer, Item>();
@@ -53,24 +55,25 @@ public class Bag {
 					database.put(id, new Hat(id, lvlr, lbs, name, desc));
 				} else if (type.contentEquals("S")) {
 					database.put(id, new Top(id, lvlr, lbs, name, desc));
-					
+
 				} else if (type.contentEquals("B")) {
 					database.put(id, new Bottom(id, lvlr, lbs, name, desc));
-					
+
 				} else if (type.contentEquals("R")) {
 					database.put(id, new Resource(id, lvlr, lbs, name, desc, 1));
-					
+
 				} else if (type.contentEquals("T")) {
 					database.put(id, new Tool(id, lvlr, lbs, name, desc));
-					
+
 				} else if (type.contentEquals("C")) {
 					database.put(id, new Consume(id, lvlr, lbs, name, desc));
-					
+				} else if (type.contentEquals("W")) {
+					database.put(id, new Weapon(id, lvlr, lbs, name, desc));
+
 				} else {
 					database.put(id, new Item(id, lvlr, lbs, name, desc));
 				}
-				
-				
+
 			}
 //			if (database.get(2) instanceof Worn) {
 //				System.out.println("It is a worn item");
@@ -78,7 +81,7 @@ public class Bag {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void storeItem(Item i) {
@@ -140,9 +143,8 @@ public class Bag {
 
 	public void setContents(Item[] contents) {
 		this.contents = contents;
-	
+
 	}
-	
 
 	public File getFile() {
 		return file;
@@ -165,9 +167,10 @@ public class Bag {
 		return "Bag [capacity=" + capacity + ", filled=" + filled + ", empty=" + empty + ", weight=" + weight
 				+ ", contents=" + Arrays.toString(contents);
 	}
+
 	public static void main(String[] args) {
 		Bag b = new Bag(20);
 		System.out.println(b.getDatabase().toString());
 	}
 
-} 
+}

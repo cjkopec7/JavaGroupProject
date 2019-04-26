@@ -34,7 +34,9 @@ public class Player {
 		bag = new Bag(20);
 		equips = new Equipment();
 		storage = new Storage(10);
-		bag.storeItem(bag.getDatabase().get(7));
+		bag.storeItem(bag.getDatabase().get(6));
+		equipItem(bag.getDatabase().get(1));
+		equipItem(bag.getDatabase().get(5));
 //		bag.storeItem(bag.getDatabase().get(2));
 //		bag.removeItem(0);
 	}
@@ -50,6 +52,7 @@ public class Player {
 		}
 
 	}
+
 	public void equipItem(Item i) {
 		if (i instanceof Hat) {
 			if (equips.getHat() != null) {
@@ -71,30 +74,27 @@ public class Player {
 
 		} else if (i instanceof Bottom) {
 			if (i instanceof Bottom) {
-				if (equips.getBotttom() != null) {
-					bag.storeItem(equips.getHat());
-					equips.setHat((Hat) i);
+				if (equips.getBottom() != null) {
+					bag.storeItem(equips.getBottom());
+					equips.setBottom((Bottom) i);
 				} else {
-					equips.setHat((Hat) i);
+					equips.setBottom((Bottom) i);
 				}
 			}
 
 		} else if (i instanceof Held) {
-			if (i instanceof Hat) {
-				if (equips.getHat() != null) {
-					bag.storeItem(equips.getHat());
-					equips.setHat((Hat) i);
+			if (i instanceof Held) {
+				if (equips.getHold() != null) {
+					bag.storeItem(equips.getHold());
+					equips.setHold((Held) i);
 				} else {
-					equips.setHat((Hat) i);
+					equips.setHold((Held) i);
 				}
 			}
 
 		}
-			
-	
-	}
-	
 
+	}
 
 	public double expSet() {
 		double exp = 85 * Math.pow(1.2177068, level);
